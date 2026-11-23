@@ -1,6 +1,5 @@
-// Fill these two values, then upload the folder. Use the PUBLISHABLE (anon) key only.
-// Never put a service_role / secret key in this file.
+
 window.DAKO_CONFIG = {
-  supabaseUrl: "",
-  supabaseKey: ""
+  supabaseUrl: "https://qocwlcgtdtcwnogfzpxk.supabase.co",
+  supabaseKey: "sb_publishable_6tI5yeVyHcbgN-_Bk9Li7w_awGhIvPr"
 };
