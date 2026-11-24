@@ -8,7 +8,7 @@ TikTok:['#010101','<path fill="#25f4ee" transform="translate(-.8 -.8)" d="M13 4h
 Instagram:['linear-gradient(45deg,#fdc468,#f7792d 30%,#d6249f 60%,#5b51d8)','<g fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.800"/></g><circle cx="17" cy="7" r="1.200" fill="#fff"/>'],
 Telegram:['#27A7E7','<path fill="#fff" d="M3 11.500 20.500 5 17.500 19 12 15.500 9.500 18 9 13.500z"/>'],
 YouTube:['#FF0000','<path fill="#fff" d="M10 8.500v7l6-3.500z"/>']};
-function bt(p,l){var b=BR[p]||['#444',''];return '<span class="bt'+(l?' l':'')+'" style="background:'+b[0]+'"><svg viewBox="0 0 24 24">'+b[1]+'</svg></span>'}
+function bt(p,l){var b=BR[p]||['#444',''];return '<span class="bt'+(l?' '+(l===1?'l':l):'')+'" style="background:'+b[0]+'"><svg viewBox="0 0 24 24">'+b[1]+'</svg></span>'}
 var STEPS=['Awaiting payment','Verifying payment','Awaiting handover','Awaiting buyer confirmation','Awaiting admin release','Funds released'];
 var SORTS=[['new','Newest'],['lo','Cheapest'],['hi','Most expensive'],['fa','Followers: low to high'],['fd','Followers: high to low']];
 var FEE=.05,COM=.10,$=function(i){return document.getElementById(i)};
@@ -108,8 +108,8 @@ async function doAuth(){
  if(u.b){tt('Your account is suspended. Contact the admin');return}
  S.me=u.id;S.tab=u.role==='admin'?'admin':'dash';sv();render();
 }
-function nav(){var u=me(),ad=u.role==='admin',t=[[ad?'admin':'dash','▦',ad?'Admin':'Dashboard'],['market','🏪','Market'],['sell','＋','Sell'],['orders','🧾','Orders'],['acct','👤','Account']];
- return '<nav class="tb"><div>'+t.map(function(x){var cur=S.tab===x[0]?' aria-current="page"':'';if(x[0]==='sell')return '<button class="sellb" data-a="tab" data-v="sell"'+cur+'><b>＋</b><span>Sell</span></button>';return '<button data-a="tab" data-v="'+x[0]+'"'+cur+'><span>'+x[1]+'</span>'+x[2]+'</button>'}).join('')+'</div></nav>';
+function nav(){var CT=S.tab==='lv'?(S.back==='chan'?'acct':(S.back||'market')):S.tab==='chan'?'acct':S.tab,u=me(),ad=u.role==='admin',t=[[ad?'admin':'dash','▦',ad?'Admin':'Dashboard'],['market','🏪','Market'],['sell','＋','Sell'],['orders','🧾','Orders'],['acct','👤','Account']];
+ return '<nav class="tb"><div>'+t.map(function(x){var cur=CT===x[0]?' aria-current="page"':'';if(x[0]==='sell')return '<button class="sellb" data-a="tab" data-v="sell"'+cur+'><b>＋</b><span>Sell</span></button>';return '<button data-a="tab" data-v="'+x[0]+'"'+cur+'><span>'+x[1]+'</span>'+x[2]+'</button>'}).join('')+'</div></nav>';
 }
 function top(){var u=me(),w=wal(u.id),un=S.nf.filter(function(n){return n.u===u.id&&!n.rd}).length,tg='<svg viewBox="0 0 24 24" width="18" height="18"><path fill="#fff" d="M3 11.500 20.500 5 17.500 19 12 15.500 9.500 18 9 13.500z"/></svg>',
  sp=/^https:\/\/(t\.me|telegram\.me)\//.test(S.sup)?'<a class="ib tgb" href="'+E(S.sup)+'" target="_blank" rel="noopener noreferrer" aria-label="Telegram support">'+tg+'</a>':'<button class="ib tgb" data-a="support" aria-label="Telegram support">'+tg+'</button>';
@@ -134,7 +134,7 @@ function fsheet(){
  var f=S.f,v=function(k){return f[k]==null?'':f[k]};
  sheet('<h2>Filters</h2><p class="sm">Narrow the results by price and follower count.</p><div class="f"><label>Price (ETB)</label><div class="two"><input id="fp1" type="number" min="0" inputmode="numeric" placeholder="Min" value="'+v('pmin')+'" aria-label="Minimum price"><input id="fp2" type="number" min="0" inputmode="numeric" placeholder="Max" value="'+v('pmax')+'" aria-label="Maximum price"></div></div><div class="f"><label>Followers</label><div class="two"><input id="ff1" type="number" min="0" inputmode="numeric" placeholder="Min" value="'+v('fmin')+'" aria-label="Minimum followers"><input id="ff2" type="number" min="0" inputmode="numeric" placeholder="Max" value="'+v('fmax')+'" aria-label="Maximum followers"></div></div><div class="f"><label for="fs">Sort by</label><select id="fs">'+SORTS.map(function(x){return '<option value="'+x[0]+'"'+(S.sort===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></div><button class="btn" data-a="fapply">Show results</button><button class="btn dk" data-a="freset">Reset filters</button>');
 }
-function lst(a){return a.length?a.map(function(x){var s=S.u.filter(function(u){return u.id===x.s})[0];return '<div class="card" role="button" tabindex="0" data-a="det" data-v="'+x.id+'"><div class="ct"><span class="pl">'+bt(x.p,1)+x.p+'</span><span style="display:flex;gap:8px;align-items:center"><span class="tag'+(x.m?' m':'')+'">'+(x.m?'Monetized':'Non-monetized')+'</span>'+heart(x.id)+'</span></div>'+(x.im&&x.im[0]?'<img class="th" src="'+x.im[0]+'" alt="Account screenshot">'+(x.im.length>1?'<div class="sm" style="margin-top:4px">📷 '+x.im.length+' photos</div>':''):'<div class="ph">No screenshot added (demo)</div>')+'<h3>'+E(x.t)+'</h3><div class="st"><span><b>'+N(x.f)+'</b> followers</span><span><b>'+x.a+'</b> yr old</span>'+(x.m?'<span><b>'+N(x.i)+'</b> ETB/mo</span>':'')+'</div><div class="cb"><div><div class="sm">Price</div><div class="pr">'+N(x.r)+' ETB</div></div><span class="vr">'+(s&&s.v?'✔ Verified seller':'')+'</span></div></div>'}).join(''):'<div class="em">No accounts match. Try changing the filters.</div>'}
+function lst(a){return a.length?a.map(function(x){var s=S.u.filter(function(u){return u.id===x.s})[0];return '<div class="card" role="button" tabindex="0" data-a="lview" data-v="'+x.id+'"><div class="ct"><span class="pl">'+bt(x.p,1)+x.p+'</span><span style="display:flex;gap:8px;align-items:center"><span class="tag'+(x.m?' m':'')+'">'+(x.m?'Monetized':'Non-monetized')+'</span>'+heart(x.id)+'</span></div>'+(x.im&&x.im[0]?'<img class="th" src="'+x.im[0]+'" alt="Account screenshot">'+(x.im.length>1?'<div class="sm" style="margin-top:4px">📷 '+x.im.length+' photos</div>':''):'<div class="ph">No screenshot added (demo)</div>')+'<h3>'+E(x.t)+'</h3><div class="st"><span><b>'+N(x.f)+'</b> followers</span><span><b>'+x.a+'</b> yr old</span>'+(x.m?'<span><b>'+N(x.i)+'</b> ETB/mo</span>':'')+'</div><div class="cb"><div><div class="sm">Price</div><div class="pr">'+N(x.r)+' ETB</div></div><span class="vr">'+(s&&s.v?'✔ Verified seller':'')+'</span></div></div>'}).join(''):'<div class="em">No accounts match. Try changing the filters.</div>'}
 function det(id){
  var x=S.l.filter(function(y){return y.id===id})[0];if(!x)return;var fee=Math.round(x.r*FEE);
  sheet('<div class="ct"><span class="pl">'+bt(x.p,1)+x.p+'</span><span style="display:flex;gap:8px;align-items:center"><span class="tag'+(x.m?' m':'')+'">'+(x.m?'Monetized':'Non-monetized')+'</span>'+heart(x.id)+'</span></div><h2>'+E(x.t)+'</h2>'+(x.im&&x.im.length?'<div class="gal">'+x.im.map(function(g,i){return '<img src="'+g+'" alt="Screenshot '+(i+1)+'">'}).join('')+'</div>':'')+(x.k&&/^https?:\/\//.test(x.k)?'<a class="lk" href="'+E(x.k)+'" target="_blank" rel="noopener noreferrer">🔗 '+E(x.k)+'</a>':'')+'<p>'+E(x.d)+'</p><div class="kv"><div><span class="sm">Followers</span><b>'+N(x.f)+'</b></div><div><span class="sm">Account age</span><b>'+x.a+' years</b></div><div><span class="sm">Monthly income</span><b>'+(x.m?N(x.i)+' ETB':'None')+'</b></div><div><span class="sm">Service fee (5%)</span><b>'+N(fee)+' ETB</b></div></div><div class="card" style="margin:8px 0"><div class="ct"><b>Total</b><span class="pr">'+N(x.r+fee)+' ETB</span></div></div><div class="nt">Your money is held in escrow. It is released to the seller only after you receive the account and confirm. Never pay outside the platform.</div><button class="btn" data-a="buy" data-v="'+x.id+'">Buy now</button><button class="btn dk" data-a="shut">Close</button>');
@@ -166,7 +166,7 @@ function vSell(){
  var u=me();
  if(u.role==='buyer')return '<h2>Sell an account</h2><div class="nt">You are signed in as a buyer. Switch to a seller account to list accounts.</div><button class="btn" data-a="beSeller">Become a seller</button>';
  if(!u.v)return '<h2>Sell an account</h2><div class="nt">Identity verification (KYC) is required before you can list accounts.</div>'+kycCard(u);
- return '<h2>Sell an account</h2><p class="sm">Your listing appears after admin approval. Never enter passwords or login codes here.</p><div class="f"><label>Platform</label><div class="row" id="sp">'+PL.map(function(p,i){return '<button class="chip" data-a="sp" data-v="'+p+'" aria-pressed="'+(i===0)+'">'+bt(p)+p+'</button>'}).join('')+'</div></div><div class="f"><label for="sm">Monetization</label><select id="sm"><option value="1">Monetized</option><option value="0">Non-monetized</option></select></div><div class="f"><label for="sl">Account link / Telegram username</label><input id="sl" type="url" inputmode="url" autocomplete="off" placeholder="https://www.tiktok.com/@name"></div><div class="f"><label for="st">Title (optional)</label><input id="st" placeholder="Left blank, it is taken from the link"></div><div class="f"><label>Account screenshots (1–4)</label><div class="shots" id="sh">'+shots()+'</div><input id="sfile" type="file" accept="image/*" multiple hidden><button class="btn dk" data-a="pickShot">＋ Add screenshot</button><p class="sm">Show followers, analytics and income. Do not include any password or code in the photo.</p></div><div class="two"><div class="f"><label for="sf">Followers</label><input id="sf" type="number" min="0" inputmode="numeric"></div><div class="f"><label for="sa">Account age (years)</label><input id="sa" type="number" min="0" step="0.5" inputmode="decimal"></div></div><div class="two"><div class="f"><label for="si">Monthly income (ETB)</label><input id="si" type="number" min="0" inputmode="numeric"></div><div class="f"><label for="sr">Price (ETB)</label><input id="sr" type="number" min="1" inputmode="numeric"></div></div><div class="nt" id="net">'+netTxt(0)+'</div><div class="f"><label for="sd">Description</label><textarea id="sd"></textarea></div><button class="btn" data-a="pub">Submit for review</button>'+(DB?'<h2>My submitted listings</h2>'+S.l.filter(function(x){return x.s===u.id}).map(function(x){var status=x.status||'pending';var badge=status==='active'||status==='approved'||status==='ok'||status==='published'?'ok':'m';return '<div class="card"><div class="ct"><b>'+E(x.t)+'</b><span class="tag '+badge+'">'+E(status)+'</span></div><div class="sm">'+E(x.p)+' · '+N(x.r)+' ETB</div></div>'}).join('')||'<div class="em">No submitted listings yet.</div>':'');
+ return '<h2>Sell an account</h2><p class="sm">Your listing appears after admin approval. Never enter passwords or login codes here.</p><div class="f"><label>Platform</label><div class="row" id="sp">'+PL.map(function(p,i){return '<button class="chip" data-a="sp" data-v="'+p+'" aria-pressed="'+(i===0)+'">'+bt(p)+p+'</button>'}).join('')+'</div></div><div class="f"><label for="sm">Monetization</label><select id="sm"><option value="1">Monetized</option><option value="0">Non-monetized</option></select></div><div class="f"><label for="scat">Category</label><select id="scat">'+CATS.map(function(c){return '<option>'+c+'</option>'}).join('')+'</select></div><div class="f"><label for="sl">Account link / Telegram username</label><input id="sl" type="url" inputmode="url" autocomplete="off" placeholder="https://www.tiktok.com/@name"></div><div class="f"><label for="st">Title (optional)</label><input id="st" placeholder="Left blank, it is taken from the link"></div><div class="f"><label>Account screenshots (1–4)</label><div class="shots" id="sh">'+shots()+'</div><input id="sfile" type="file" accept="image/*" multiple hidden><button class="btn dk" data-a="pickShot">＋ Add screenshot</button><p class="sm">Show followers, analytics and income. Do not include any password or code in the photo.</p></div><div class="two"><div class="f"><label for="sf">Followers</label><input id="sf" type="number" min="0" inputmode="numeric"></div><div class="f"><label for="sa">Account age (years)</label><input id="sa" type="number" min="0" step="0.5" inputmode="decimal"></div></div><div class="two"><div class="f"><label for="si">Monthly income (ETB)</label><input id="si" type="number" min="0" inputmode="numeric"></div><div class="f"><label for="sr">Price (ETB)</label><input id="sr" type="number" min="1" inputmode="numeric"></div></div><div class="nt" id="net">'+netTxt(0)+'</div><div class="f"><label for="sd">Description</label><textarea id="sd"></textarea></div><button class="btn" data-a="pub">Submit for review</button>'+(DB?'<h2>My submitted listings</h2>'+S.l.filter(function(x){return x.s===u.id}).map(function(x){var status=x.status||'pending';var badge=status==='active'||status==='approved'||status==='ok'||status==='published'?'ok':'m';return '<div class="card"><div class="ct"><b>'+E(x.t)+'</b><span class="tag '+badge+'">'+E(status)+'</span></div><div class="sm">'+E(x.p)+' · '+N(x.r)+' ETB</div></div>'}).join('')||'<div class="em">No submitted listings yet.</div>':'');
 }
 var HOST={Facebook:/(^|\.)(facebook\.com|fb\.com|fb\.watch)$/,TikTok:/(^|\.)tiktok\.com$/,Instagram:/(^|\.)instagram\.com$/,Telegram:/(^|\.)(t\.me|telegram\.me)$/,YouTube:/(^|\.)(youtube\.com|youtu\.be)$/};
 function shots(){return SH.map(function(g,i){return '<div><img src="'+g+'" alt="Screenshot '+(i+1)+'"><button data-a="rmShot" data-v="'+i+'" aria-label="Remove">×</button></div>'}).join('')}
@@ -184,22 +184,33 @@ async function pub(){
   try{
    var lid=crypto.randomUUID(),urls=await uploadShots(lid);
    var payload={id:lid,seller_id:DB_USER.id,platform:p,title:t,description:$('sd').value.trim()||'No description',follower_count:Number($('sf').value)||0,price_etb:r,status:'pending',account_url:url.href,is_monetized:m,account_age_years:Number($('sa').value)||0,monthly_income_etb:m?(Number($('si').value)||0):0,screenshots:urls};
-   var ins=await DB.from('listings').insert(payload);if(ins.error)throw ins.error;
+   payload.category=$('scat')?$('scat').value:null;
+   var ins=await DB.from('listings').insert(payload);
+   if(ins.error&&/category/i.test(ins.error.message||'')){delete payload.category;ins=await DB.from('listings').insert(payload)}
+   if(ins.error)throw ins.error;
    SH=[];await refreshBackendListings();tt('Listing sent to admin for review');S.tab='market';render();
   }catch(err){tt('Listing backend error: '+(err.message||err))}
   return;
  }
- S.l.unshift({id:Date.now(),s:u.id,p:p,m:m?1:0,t:t,f:Number($('sf').value)||0,a:Number($('sa').value)||0,i:m?(Number($('si').value)||0):0,r:r,d:$('sd').value.trim()||'No description',x:'pe',k:url.href,im:SH.slice()});
+ S.l.unshift({id:Date.now(),s:u.id,p:p,m:m?1:0,t:t,f:Number($('sf').value)||0,a:Number($('sa').value)||0,i:m?(Number($('si').value)||0):0,r:r,d:$('sd').value.trim()||'No description',x:'pe',k:url.href,im:SH.slice(),cat:($('scat')||{}).value||'',t0:Date.now()});
  if(!sv()){S.l.shift();tt('Storage is full. Remove some photos');return}
  SH=[];nfyA('New listing awaiting review: '+t);sv();S.tab='market';render();tt('Sent to admin for review');
 }
+var CATS=['Entertainment','News','Education','Music','Sports','Business','Gaming','Lifestyle','Religion','Other'];
+var OST=['Awaiting payment','Verifying','Handover','Confirming','Releasing','Success'];
+function kfmt(n){n=Number(n)||0;return n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1e3?(n/1e3).toFixed(1).replace(/\.0$/,'')+'K':String(n)}
+function ago2(t){if(!t)return '';var m=Math.round((Date.now()-t)/60000);return m<1?'now':m<60?m+'m':m<1440?Math.round(m/60)+'h':Math.round(m/1440)+'d'}
+function fdate(t){if(!t)return '';var d=new Date(t);return d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear()}
+function ct0(x){return x.t0||(x.id>1e11?x.id:0)}
+function brandBg(p){return BR[p]?BR[p][0]:'#444'}
+function tier(x){var a=S.l.filter(function(l){return l.p===x.p&&l.x==='ok'&&l.r>0}).map(function(l){return l.r}).sort(function(p,q){return p-q});if(a.length<3)return {n:2,l:'Medium Price'};var md=a[Math.floor(a.length/2)];return x.r<md*.7?{n:1,l:'Low Price'}:x.r>md*1.4?{n:3,l:'High Price'}:{n:2,l:'Medium Price'}}
 function oCard(o,role){
  var st=o.st,steps=STEPS.map(function(s,i){return '<li class="'+(i<st?'d':i===st?'n':'')+'"><i>'+(i<st?'✓':i+1)+'</i><span>'+s+'</span></li>'}).join(''),a='',bd='';
  var A=function(k,l,c){return '<button class="btn '+(c||'')+'" data-a="'+k+'" data-v="'+o.id+'">'+l+'</button>'};
  var pr=prc(o),net=netOf(o);
  if(role==='seller')bd='<div class="sm">Price <b>'+N(pr)+'</b> · 10% commission −<b>'+N(pr-net)+'</b> · You receive <b>'+N(net)+' ETB</b></div>';
  else if(role==='admin')bd='<div class="sm">Buyer paid <b>'+N(o.amt)+'</b> · Seller share <b>'+N(net)+'</b> · Platform earns <b>'+N(o.amt-net)+' ETB</b></div>';
- if(o.rf)a='<span class="tag bd">Refunded</span>';
+ if(o.rf)a='<span class="tag bd">Refunded</span>';else if(o.cx)a='<span class="tag bd">Cancelled</span>';
  else if(role==='buyer'&&st===0)a='<div class="nt">Amount to pay: <b>'+N(o.amt)+' ETB</b>. Send the money, then upload your receipt.</div>'+A('payopen','Pay now')+A('cxl','Cancel order','dk');
  else if(role==='seller'&&st===1)a='<div class="nt">The buyer has paid. Your share is locked while the admin verifies the payment.</div>';
  else if(role==='seller'&&st===2)a=A('hand','I have handed over the account');
@@ -236,9 +247,51 @@ function vDash(){
  '<button class="btn" style="margin-top:10px" data-a="reqpay"'+(w.av>0?'':' disabled')+'>Request withdrawal'+(w.av>0?' · '+N(w.av)+' ETB':'')+'</button></div>'+
  '<div class="nt">Your sale share is locked when a buyer pays. After the admin confirms the sale, it moves to your available balance. Platform commission is 10% of the listing price.</div>';
 }
+function ordList(){
+ var u=me(),all=S.o.filter(function(o){return o.b===u.id||o.s===u.id}),q=(S.oq||'').toLowerCase(),tb=S.ot||'pr';
+ var f={pr:function(o){return !o.rf&&!o.cx&&o.st<5},ok:function(o){return !o.rf&&!o.cx&&o.st===5},cn:function(o){return o.rf||o.cx}}[tb];
+ var a=all.filter(f).filter(function(o){return (o.p+' '+o.t).toLowerCase().indexOf(q)>-1});
+ return a.length?a.map(function(o){var role=o.b===u.id?'buyer':'seller',lab=o.rf?'Refunded':o.cx?'Cancelled':OST[o.st],cls=o.rf||o.cx?'bd':o.st===5?'ok':'';
+  return '<div class="oc'+(tb==='pr'?' proc':'')+'" role="button" tabindex="0" data-a="oopen" data-v="'+o.id+'"><div class="ocav">'+bt(o.p,'xl')+'<span class="sellt '+(role==='seller'?'sl':'by')+'">'+(role==='seller'?'SELL':'BUY')+'</span></div><div class="ocm"><div class="ct"><b class="oct">'+E(o.t)+'</b><span class="sm">'+ago2(ct0(o))+'</span></div><div class="ocr"><span class="pchip" style="background:'+brandBg(o.p)+'">'+E(o.p)+'</span><span class="ocp">'+N(role==='seller'?netOf(o):o.amt)+' ETB</span><span class="st2 '+cls+'">'+lab+'</span></div>'+(o.dp?'<div class="sm" style="color:var(--bdt)">⚠ Dispute reported</div>':'')+'</div></div>'}).join(''):'<div class="em">No orders here.</div>'}
 function vOrders(){
- var u=me(),a=S.o.filter(function(o){return o.b===u.id||o.s===u.id});
- return '<h2>My orders</h2>'+(a.length?a.map(function(o){return oCard(o,o.b===u.id?'buyer':'seller')}).join(''):'<div class="em">No orders yet.</div>');
+ var u=me(),all=S.o.filter(function(o){return o.b===u.id||o.s===u.id}),tb=S.ot||'pr',
+ pr=all.filter(function(o){return !o.rf&&!o.cx&&o.st<5}).length,okc=all.filter(function(o){return !o.rf&&!o.cx&&o.st===5}).length,cnc=all.filter(function(o){return o.rf||o.cx}).length,
+ un=S.nf.filter(function(n){return n.u===u.id&&!n.rd}).length,sp=/^https:\/\/(t\.me|telegram\.me)\//.test(S.sup),
+ inner='<span class="ava2"><img src="'+LG+'" alt=""></span><span class="cam"><b>Chat with Admin ✦</b><span class="sm">Tap to message support anytime</span></span><span class="pinn">📌 Pinned</span>',
+ chat=sp?'<a class="chatadm" href="'+E(S.sup)+'" target="_blank" rel="noopener noreferrer">'+inner+'</a>':'<button class="chatadm" data-a="support">'+inner+'</button>';
+ return '<div class="inh"><span class="inico">📥</span><div><h1 class="wb" style="margin:0">Inbox</h1><div class="sm">'+pr+' processing · tap an order to manage</div></div>'+(un?'<button class="newb" data-a="bell">💬 '+un+' new</button>':'')+'</div><input id="oq" class="q2" type="search" placeholder="Search orders, platforms…" value="'+E(S.oq||'')+'" aria-label="Search orders">'+chat+'<h2>P2P Orders</h2><div class="seg">'+[['pr','Processing',pr],['ok','Success',okc],['cn','Cancelled',cnc]].map(function(x){return '<button data-a="otab" data-v="'+x[0]+'" aria-pressed="'+(tb===x[0])+'">'+x[1]+' <span class="cnt">'+x[2]+'</span></button>'}).join('')+'</div><div id="olist">'+ordList()+'</div>';
+}
+function vListing(){
+ var x=S.l.filter(function(l){return l.id===S.lv})[0];
+ if(!x)return '<div class="lvh"><button class="ib2" data-a="lback" aria-label="Back">‹</button></div><div class="em">This listing is no longer available.</div>';
+ var u=me(),own=x.s===u.id,fee=Math.round(x.r*FEE),t=tier(x),sl=S.u.filter(function(y){return y.id===x.s})[0],
+ stt={ok:['Live','ok'],pe:['Pending','m'],rs:['Reserved','m'],sd:['Sold','ok'],rj:['Rejected','bd'],rm:['Removed','bd']}[x.x]||['Live','ok'],
+ isNew=ct0(x)&&Date.now()-ct0(x)<6048e5,
+ bars=[1,2,3].map(function(i){return '<i class="'+(i<=t.n?'on t'+t.n:'')+'" style="height:'+(8+i*6)+'px"></i>'}).join('');
+ return '<div class="lvh"><button class="ib2" data-a="lback" aria-label="Back">‹</button>'+heart(x.id)+'</div>'+
+ '<div class="lvav">'+bt(x.p,'xxl')+'</div><div class="lvch"><span class="pchip" style="background:'+brandBg(x.p)+'">'+E(x.p).toUpperCase()+'</span><span class="tag '+stt[1]+'">● '+stt[0]+'</span></div>'+
+ '<h1 class="lvt">'+(isNew?'<span class="newt">NEW</span> ':'')+E(x.t)+'</h1>'+
+ (x.k&&/^https?:\/\//.test(x.k)?'<a class="lk" style="text-align:center;font-size:15px" href="'+E(x.k)+'" target="_blank" rel="noopener noreferrer">View on '+E(x.p)+' ↗</a>':'')+
+ (x.cat?'<div style="text-align:center"><span class="chipc">'+E(x.cat)+'</span></div>':'')+
+ '<div class="lvs"><div><b>'+kfmt(x.f)+'</b><span>Followers</span></div><div><b>'+(x.a||0)+'y</b><span>Account age</span></div><div><b>'+(x.m?kfmt(x.i):'0')+'</b><span>ETB per month</span></div></div>'+
+ '<div class="card lvp"><div class="ct"><span style="display:flex;align-items:center"><span class="bars">'+bars+'</span><span class="tier t'+t.n+'">'+t.l+'</span></span><span class="tag'+(x.m?' m':'')+'">'+(x.m?'Monetized':'Non-monetized')+'</span></div><div class="lvpr">'+N(x.r)+' ETB</div>'+
+ (own?'<div class="sm" style="text-align:center">This is your listing.</div>':'<div class="sm" style="text-align:center">Service fee (5%): '+N(fee)+' ETB · Total '+N(x.r+fee)+' ETB</div><div class="nt">Your money is held in escrow. It is released to the seller only after you receive the account and confirm. Never pay outside the platform.</div>'+(x.x==='ok'?'<button class="btn" data-a="buy" data-v="'+x.id+'">Buy now</button>':'<div class="nt">This account is not available right now.</div>'))+'</div>'+
+ '<div class="card"><b>🖼 Dashboard screenshot</b><p class="sm">Analytics screenshot submitted by the seller for verification.</p>'+(x.im&&x.im.length?'<div class="gal">'+x.im.map(function(g,i){return '<img src="'+g+'" alt="Screenshot '+(i+1)+'">'}).join('')+'</div>':'<div class="ph">No screenshot added (demo)</div>')+'</div>'+
+ (x.d?'<div class="card"><b>About this account</b><p>'+E(x.d)+'</p></div>':'')+(sl&&sl.v?'<div class="vr" style="text-align:center;margin:8px 0">✔ Verified seller</div>':'');
+}
+function chanCard(x){
+ var st={ok:['LIVE','ok'],pe:['PENDING','m'],rs:['PROCESSING','prc'],sd:['SOLD','ok'],rj:['REJECTED','bd'],rm:['REJECTED','bd']}[x.x]||['LIVE','ok'],isNew=ct0(x)&&Date.now()-ct0(x)<6048e5,
+ th=x.im&&x.im[0]?'<img src="'+x.im[0]+'" alt="">':bt(x.p,'xl');
+ return '<div class="cc" role="button" tabindex="0" data-a="lview" data-v="'+x.id+'"><div class="ccs" style="background:'+brandBg(x.p)+'"><svg viewBox="0 0 24 24" width="24" height="24">'+(BR[x.p]?BR[x.p][1]:'')+'</svg></div><div class="ccb"><div class="ccr"><div class="ccth">'+th+'</div><div class="ccm"><div class="ct"><b>'+(isNew?'<span class="newt">NEW</span> ':'')+E(x.t)+'</b><span class="tag '+st[1]+'">'+st[0]+'</span></div><div class="cci">'+(x.cat?'<span class="chipc" style="margin:0">'+E(x.cat)+'</span>':'')+'<span class="sm">👥 '+kfmt(x.f)+'</span><span class="sm">'+fdate(ct0(x))+'</span></div></div></div>'+((x.x==='rj'||x.x==='rm')&&x.note?'<div class="sm" style="color:var(--bdt);margin-top:6px">Reason: '+E(x.note)+'</div>':'')+'<div class="ct ccf"><span class="pr">'+N(x.r)+' ETB</span><span class="cca"><button class="ib3" data-a="lview" data-v="'+x.id+'" aria-label="View">👁</button>'+(x.x==='ok'||x.x==='pe'||x.x==='rj'?'<button class="ib3 dl" data-a="mylrm" data-v="'+x.id+'" aria-label="Delete">🗑</button>':'')+'</span></div></div></div>';
+}
+function vChan(){
+ var u=me(),mine=S.l.filter(function(l){return l.s===u.id}),tb=S.ct||'ac',
+ A=function(l){return l.x==='ok'||l.x==='pe'||l.x==='rs'},SD=function(l){return l.x==='sd'},RJ=function(l){return l.x==='rj'||l.x==='rm'},
+ live=mine.filter(function(l){return l.x==='ok'}).length,sold=mine.filter(SD).length,rej=mine.filter(RJ).length,act=mine.filter(A).length,
+ list=mine.filter({ac:A,sd:SD,rj:RJ}[tb]).sort(function(a,b){return ct0(b)-ct0(a)});
+ return '<div class="lvh"><button class="ib2" data-a="tab" data-v="acct" aria-label="Back">‹</button></div><div class="inh"><span class="inico">🗂</span><div><h1 class="wb" style="margin:0">My Channels</h1><div class="sm">'+mine.length+' total · '+live+' live · '+sold+' sold · '+rej+' rejected</div></div></div>'+
+ '<button class="btn newch" data-a="tab" data-v="sell">＋ NEW CHANNEL</button><div class="sg3"><div class="stc3"><span class="ico g">✓</span><small>ACTIVE</small><b>'+live+'</b></div><div class="stc3"><span class="ico b">▣</span><small>SOLD OUT</small><b>'+sold+'</b></div><div class="stc3"><span class="ico y">✕</span><small>REJECTED</small><b>'+rej+'</b></div></div>'+
+ '<div class="seg">'+[['ac','Active',act],['sd','Sold Out',sold],['rj','Rejected',rej]].map(function(x){return '<button data-a="ctab" data-v="'+x[0]+'" aria-pressed="'+(tb===x[0])+'">'+x[1]+' <span class="cnt">'+x[2]+'</span></button>'}).join('')+'</div>'+(list.length?list.map(chanCard).join(''):'<div class="em">Nothing here yet.</div>');
 }
 function bkCard(u){if(!u.auth||PROD)return '';
  return '<div class="card"><div class="ct"><b>Backend account</b><span class="tag '+(u.role==='admin'?'ok':'')+'">Role: '+E(u.role)+'</span></div><div class="sm" style="word-break:break-all">User ID: <b>'+E(u.id)+'</b></div>'+(u.roleErr?'<div class="sm" style="color:var(--bdt)">Profile check: '+E(u.roleErr)+'</div>':'')+(u.role!=='admin'?'<div class="nt">This account is not an admin in the database, so the Admin tab is hidden. In the Supabase SQL Editor run:<br><code style="word-break:break-all">insert into public.profiles(id, full_name, role) values (&#39;'+E(u.id)+'&#39;, &#39;Admin&#39;, &#39;admin&#39;) on conflict (id) do update set role = &#39;admin&#39;;</code></div>':'')+'<button class="btn dk" style="margin-top:8px" data-a="rolecheck">Check admin access again</button></div>'}
@@ -265,9 +318,9 @@ function vAdmin(){
  return h;
 }
 function render(){
- var u=me();if(!u){authView();return}
+ var u=me();shut();if(!u){authView();return}
  if(u.role!=='admin'&&S.tab==='admin')S.tab='dash';if(u.role==='admin'&&(S.tab==='dash'||S.tab==='wallet'))S.tab='admin';
- var v={dash:vDash,wallet:vDash,market:vMarket,sell:vSell,orders:vOrders,acct:vAcct,admin:vAdmin}[S.tab]||vDash;
+ var v={dash:vDash,wallet:vDash,market:vMarket,sell:vSell,orders:vOrders,acct:vAcct,admin:vAdmin,lv:vListing,chan:vChan}[S.tab]||vDash;
  $('app').innerHTML=top()+'<main class="w">'+v()+'</main>'+nav()+(u.role==='admin'?'':'<button class="fab" data-a="dpopen" aria-label="Deposit ETB"><span>⚡</span><small>ETB</small></button>');window.scrollTo(0,0);
 }
 function ord(id){return S.o.filter(function(o){return o.id===id})[0]}
@@ -282,12 +335,17 @@ document.addEventListener('click',function(ev){
  else if(a==='fopen')fsheet();
  else if(a==='fapply'){S.f={pmin:num('fp1'),pmax:num('fp2'),fmin:num('ff1'),fmax:num('ff2')};if(S.f.pmin!=null&&S.f.pmax!=null&&S.f.pmin>S.f.pmax){tt('Minimum price is higher than maximum');return}if(S.f.fmin!=null&&S.f.fmax!=null&&S.f.fmin>S.f.fmax){tt('Minimum followers is higher than maximum');return}S.sort=$('fs').value;sv();shut();render()}
  else if(a==='freset'){S.f={};S.sort='new';sv();shut();render()}
- else if(a==='det')det(Number(v));else if(a==='buy')buy(Number(v));else if(a==='shut')shut();
+ else if(a==='det'||a==='lview'){if(S.tab!=='lv')S.back=S.tab;S.lv=Number(v);S.tab='lv';render()}
+ else if(a==='lback'){S.tab=S.back||'market';render()}
+ else if(a==='otab'){S.ot=v;render()}
+ else if(a==='ctab'){S.ct=v;render()}
+ else if(a==='oopen'){var oo2=ord(Number(v)),ur2=me();if(oo2)sheet(oCard(oo2,oo2.b===ur2.id?'buyer':'seller')+'<button class="btn dk" data-a="shut">Close</button>')}
+ else if(a==='buy')buy(Number(v));else if(a==='shut')shut();
  else if(a==='sp'){document.querySelectorAll('#sp button').forEach(function(b){b.setAttribute('aria-pressed',String(b===el))});if(v==='Telegram'){$('sl').value='https://t.me/Addisehd';$('sl').placeholder='https://t.me/Addisehd'}else if($('sl').value==='https://t.me/Addisehd'){$('sl').value='';$('sl').placeholder='https://www.'+({Facebook:'facebook.com/@name',TikTok:'tiktok.com/@name',Instagram:'instagram.com/@name',YouTube:'youtube.com/@channel'}[v]||'example.com')}}
  else if(a==='pickShot'){$('sfile').click()}else if(a==='rmShot'){SH.splice(Number(v),1);$('sh').innerHTML=shots()}
  else if(a==='beSeller'){me().role='seller';sv();render()}else if(a==='pub')pub();
  else if(a==='payopen')paySheet(Number(v));
- else if(a==='cxl'){var co=ord(Number(v));S.l.forEach(function(l){if(co&&l.id===co.l&&l.x==='rs')l.x='ok'});S.o=S.o.filter(function(x){return x.id!==Number(v)});sv();render();tt('Order cancelled')}
+ else if(a==='cxl'){var co=ord(Number(v));S.l.forEach(function(l){if(co&&l.id===co.l&&l.x==='rs')l.x='ok'});if(co)co.cx=1;sv();render();tt('Order cancelled')}
  else if(a==='cp'){try{navigator.clipboard.writeText(v).then(function(){tt('Number copied')},function(){tt('Could not copy. Select the number manually')})}catch(e){tt('Could not copy. Select the number manually')}}
  else if(a==='pickRc'){$('rcf').click()}
  else if(a==='submitPay'){o=ord(Number(v));if(!RC){tt('Upload your payment receipt first');return}var old=[o.rc,o.pm,o.ref,o.st];o.rc=RC;o.pm=$('pmth').value;o.ref=($('rcr').value||'').trim();o.st=1;if(!sv()){o.rc=old[0];o.pm=old[1];o.ref=old[2];o.st=old[3];tt('Storage is full. Try a smaller image');return}RC=null;nfyA('Payment receipt submitted for "'+o.t+'" ('+N(o.amt)+' ETB). Please verify.');nfy(o.s,'The buyer paid for "'+o.t+'". The payment is being verified.');sv();shut();S.tab='orders';render();tt('Payment submitted. The admin will verify it')}
@@ -300,10 +358,10 @@ document.addEventListener('click',function(ev){
  else if(a==='bell')bellSheet();
  else if(a==='dpopen')dpSheet();
  else if(a==='fav'){var fu=me();fu.fv=fu.fv||[];var fi=fu.fv.indexOf(Number(v));if(fi>-1)fu.fv.splice(fi,1);else fu.fv.push(Number(v));sv();el.textContent=fi>-1?'♡':'♥';el.setAttribute('aria-pressed',String(fi<0))}
- else if(a==='mn'){var mu=me();if(v==='pd')pdSheet();else if(v==='lang')tt('English is the only language for now');else if(v==='sec')secSheet();else if(v==='dash'){S.tab=mu.role==='admin'?'admin':'dash';render()}else if(v==='mych')mychSheet();else if(v==='favs')favSheet();else if(v==='kyc')sheet(kycCard(mu)+'<button class="btn dk" data-a="shut">Close</button>');else if(v==='pay')paySett();else if(v==='inst'){var ip=window.__dakoInstall;if(ip){ip.prompt();window.__dakoInstall=null;render()}}}
+ else if(a==='mn'){var mu=me();if(v==='pd')pdSheet();else if(v==='lang')tt('English is the only language for now');else if(v==='sec')secSheet();else if(v==='dash'){S.tab=mu.role==='admin'?'admin':'dash';render()}else if(v==='mych'){S.tab='chan';render()}else if(v==='favs')favSheet();else if(v==='kyc')sheet(kycCard(mu)+'<button class="btn dk" data-a="shut">Close</button>');else if(v==='pay')paySett();else if(v==='inst'){var ip=window.__dakoInstall;if(ip){ip.prompt();window.__dakoInstall=null;render()}}}
  else if(a==='savePd'){var pn=$('pdn').value.trim();if(pn.length<3){tt('Enter your name');return}var pu=me();pu.n=pn;pu.ph=$('pdp').value.trim();sv();shut();render();tt('Saved')}
  else if(a==='chpw')chPw();
- else if(a==='mylrm'){var ml=S.l.filter(function(l){return l.id===Number(v)})[0];if(ml&&ml.s===me().id&&(ml.x==='ok'||ml.x==='pe')){ml.x='rm';sv();mychSheet();tt('Listing removed')}}
+ else if(a==='mylrm'){var ml=S.l.filter(function(l){return l.id===Number(v)})[0];if(ml&&ml.s===me().id&&(ml.x==='ok'||ml.x==='pe')){ml.x='rm';sv();render();tt('Listing removed')}}
  else if(a==='walpay'){o=ord(Number(v));var wu=me();if(wal(wu.id).av<o.amt){tt('Not enough wallet balance');return}o.wp=1;o.pm='Wallet';o.ref='WALLET';o.st=2;nfy(o.s,'The buyer paid for \"'+o.t+'\" from their wallet. Hand over the account.');sv();shut();S.tab='orders';render();tt('Paid from your wallet')}
  else if(a==='dpsubmit'){var du=me(),am=Number($('da').value);if(!(am>=100)){tt('Minimum deposit is 100 ETB');return}if(!RC){tt('Upload your payment receipt first');return}S.dp.unshift({id:Date.now(),u:du.id,amt:Math.round(am),pm:$('pmth').value,ref:($('rcr').value||'').trim(),rc:RC,st:'pe',t:Date.now()});if(!sv()){S.dp.shift();tt('Storage is full. Try a smaller image');return}RC=null;nfyA('New deposit of '+N(Math.round(am))+' ETB from '+du.n+'. Please verify.');sv();shut();render();tt('Deposit submitted. The admin will verify it')}
  else if(a==='dok'){var d1=S.dp.filter(function(x){return x.id===Number(v)})[0];d1.st='ok';nfy(d1.u,'Your deposit of '+N(d1.amt)+' ETB was approved and added to your wallet.');sv();render()}
@@ -333,7 +391,7 @@ document.addEventListener('click',function(ev){
  else if(a==='saveCfg'){var sl2=$('csup').value.trim();if(sl2&&!/^https:\/\/(t\.me|telegram\.me)\//.test(sl2)){tt('Support link must start with https://t.me/');return}S.sup=sl2;S.pa.forEach(function(x,i){x.nm=$('cn'+i).value.trim();x.no=$('co'+i).value.trim()});sv();tt('Saved')}
  else if(a==='out'){S.me=null;S.mode='in';sv();render()}
 });
-document.addEventListener('input',function(e){if(e.target.id==='sr'){$('net').innerHTML=netTxt(Number(e.target.value))}if(e.target.id==='q'){S.q=e.target.value.trim();$('lst').innerHTML=lst(flt())}});
+document.addEventListener('input',function(e){if(e.target.id==='oq'){S.oq=e.target.value;$('olist').innerHTML=ordList()}if(e.target.id==='sr'){$('net').innerHTML=netTxt(Number(e.target.value))}if(e.target.id==='q'){S.q=e.target.value.trim();$('lst').innerHTML=lst(flt())}});
 document.addEventListener('change',async function(e){if(e.target.id.indexOf('ki-')===0){var kf=(e.target.files||[])[0],ks2=e.target.id.slice(3);if(kf){var kg=await comp(kf);if(kg){KI[ks2]=kg;$('kp-'+ks2).innerHTML='<img class="th" style="height:110px;width:auto" src="'+kg+'" alt="Selected photo">'}else tt('Could not read that image')}e.target.value='';return}if(e.target.id==='rcf'){var f0=(e.target.files||[])[0];if(f0){var g0=await comp(f0);if(g0){RC=g0;$('rcp').innerHTML='<img class="th" src="'+g0+'" alt="Receipt preview">'}else tt('Could not read that image')}e.target.value='';return}if(e.target.id!=='sfile')return;var fs=Array.from(e.target.files||[]);for(var i=0;i<fs.length&&SH.length<4;i++){var g=await comp(fs[i]);if(g)SH.push(g)}e.target.value='';$('sh').innerHTML=shots();if(fs.length&&SH.length>=4)tt('Up to 4 photos only')});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')shut();if((e.key==='Enter'||e.key===' ')&&e.target.getAttribute&&e.target.getAttribute('role')==='button'){e.preventDefault();e.target.click()}});
 // Supabase Auth + Listings bridge, preserving the existing gold/black UI.
@@ -370,12 +428,13 @@ async function backendLogin(user){
 async function refreshBackendListings(){
  if(!DB)return;
  var cols='id,seller_id,platform,title,description,follower_count,price_etb,status,created_at',ext=cols+',account_url,is_monetized,account_age_years,monthly_income_etb,screenshots,reject_reason';
- var q=await DB.from('listings').select(ext).order('created_at',{ascending:false});
+ var q=await DB.from('listings').select(ext+',category').order('created_at',{ascending:false});
+ if(q.error)q=await DB.from('listings').select(ext).order('created_at',{ascending:false});
  if(q.error)q=await DB.from('listings').select(cols).order('created_at',{ascending:false});
  if(q.error)throw q.error;
  var me0=DB_USER&&S.u.filter(function(x){return x.id===DB_USER.id})[0],adm=!!me0&&me0.role==='admin';
  var MAP={approved:'ok',available:'ok',active:'ok',ok:'ok',published:'ok',pending:'pe',rejected:'rj',reserved:'rs',sold:'sd',paused:'rm'};
- S.l=(q.data||[]).map(function(x){var st=String(x.status||'pending').toLowerCase();return {id:nid(x.id),uid:x.id,s:x.seller_id,p:x.platform||'Other',m:x.is_monetized?1:0,t:x.title||'Untitled listing',f:Number(x.follower_count||0),a:Number(x.account_age_years||0),i:Number(x.monthly_income_etb||0),r:Number(x.price_etb||0),d:x.description||'',x:MAP[st]||'pe',k:x.account_url||'',im:Array.isArray(x.screenshots)?x.screenshots:[],backend:true,status:st,note:x.reject_reason||''}}).filter(function(x){return adm||x.x==='ok'||(DB_USER&&x.s===DB_USER.id)});
+ S.l=(q.data||[]).map(function(x){var st=String(x.status||'pending').toLowerCase();return {id:nid(x.id),uid:x.id,t0:Date.parse(x.created_at)||0,cat:x.category||'',s:x.seller_id,p:x.platform||'Other',m:x.is_monetized?1:0,t:x.title||'Untitled listing',f:Number(x.follower_count||0),a:Number(x.account_age_years||0),i:Number(x.monthly_income_etb||0),r:Number(x.price_etb||0),d:x.description||'',x:MAP[st]||'pe',k:x.account_url||'',im:Array.isArray(x.screenshots)?x.screenshots:[],backend:true,status:st,note:x.reject_reason||''}}).filter(function(x){return adm||x.x==='ok'||(DB_USER&&x.s===DB_USER.id)});
 }
 function recoverySheet(){sheet('<h2>Set a new password</h2><div class="f"><label for="rp1">New password</label><input id="rp1" type="password" autocomplete="new-password" placeholder="At least 6 characters"></div><div class="f"><label for="rp2">Confirm new password</label><input id="rp2" type="password" autocomplete="new-password"></div><button class="btn" data-a="newpw">Update password</button>')}
 var BEACT=['buy','walpay','submitPay','cxl','hand','ok','dis','ver','rel','ref','dpsubmit','dok','dno','reqpay','paid','saveCfg','savePay','bell','kycsubmit','kview','kok','kno','krev'];
@@ -390,7 +449,7 @@ async function refreshBackendData(){
   var r=await Promise.all([DB.from('market_orders').select('*').order('created_at',{ascending:false}),DB.from('wallet_deposits').select('*').order('created_at',{ascending:false}),DB.from('wallet_withdrawals').select('*').order('created_at',{ascending:false}),DB.from('app_notifications').select('*').order('created_at',{ascending:false}).limit(100),DB.from('app_settings').select('key,value'),DB.from('payout_accounts').select('*').eq('user_id',DB_USER.id).maybeSingle(),DB.rpc('wallet_summary'),DB.from('kyc_submissions').select('*').order('created_at',{ascending:false})]);
   for(var k=0;k<4;k++)if(r[k].error)throw r[k].error;
   var ST={awaiting_payment:0,verifying:1,awaiting_handover:2,awaiting_confirmation:3,awaiting_release:4,released:5,refunded:0,cancelled:0},DM={pending:'pe',approved:'ok',rejected:'no'};
-  S.o=(r[0].data||[]).filter(function(x){return x.status!=='cancelled'}).map(function(x){return {id:nid(x.id),uid:x.id,l:x.listing_id,t:x.title,p:x.platform,b:x.buyer_id,s:x.seller_id,amt:Number(x.amount_etb),pr:Number(x.price_etb),net:Number(x.seller_net_etb),st:ST[x.status]||0,ref:x.payment_ref||'',pm:x.payment_method||'',dp:x.disputed?1:0,rf:x.status==='refunded'?1:0,wp:x.paid_with_wallet?1:0,rcp:x.receipt_path||'',rc:'',backend:true}});
+  S.o=(r[0].data||[]).map(function(x){return {id:nid(x.id),uid:x.id,t0:Date.parse(x.created_at)||0,cx:x.status==='cancelled'?1:0,l:x.listing_id,t:x.title,p:x.platform,b:x.buyer_id,s:x.seller_id,amt:Number(x.amount_etb),pr:Number(x.price_etb),net:Number(x.seller_net_etb),st:ST[x.status]||0,ref:x.payment_ref||'',pm:x.payment_method||'',dp:x.disputed?1:0,rf:x.status==='refunded'?1:0,wp:x.paid_with_wallet?1:0,rcp:x.receipt_path||'',rc:'',backend:true}});
   S.dp=(r[1].data||[]).map(function(x){return {id:nid(x.id),uid:x.id,u:x.user_id,amt:Number(x.amount_etb),pm:x.method,ref:x.reference||'',rcp:x.receipt_path||'',rc:'',st:DM[x.status]||'pe',note:x.note||'',t:T(x.created_at)}});
   S.po=(r[2].data||[]).map(function(x){return {id:nid(x.id),uid:x.id,s:x.user_id,amt:Number(x.amount_etb),st:x.status==='paid'?'pd':'pe',to:x.destination,ref:x.reference||'',t:T(x.created_at)}});
   S.nf=(r[3].data||[]).map(function(x){return {id:nid(x.id),u:x.user_id,tx:x.body,t:T(x.created_at),rd:x.read?1:0}});
@@ -458,7 +517,7 @@ document.addEventListener('click',async function(ev){
   var L=S.l.filter(function(x){return String(x.id)===el.dataset.v})[0];
   if(L&&L.backend){ev.stopPropagation();
    try{
-    if(a==='mylrm'){if(L.s!==DB_USER.id)return;var d=await DB.from('listings').delete().eq('id',L.uid).select('id');if(d.error)throw d.error;if(!d.data||!d.data.length){tt('Could not remove this listing');return}await refreshBackendListings();mychSheet();tt('Listing removed');return}
+    if(a==='mylrm'){if(L.s!==DB_USER.id)return;var d=await DB.from('listings').delete().eq('id',L.uid).select('id');if(d.error)throw d.error;if(!d.data||!d.data.length){tt('Could not remove this listing');return}await refreshBackendListings();render();tt('Listing removed');return}
     var patch=a==='lok'?{status:'approved',reject_reason:null}:{status:'rejected',reject_reason:(($('lr'+L.id)||{}).value||'').trim()||null};
     var r=await DB.from('listings').update(patch).eq('id',L.uid).select('id');if(r.error)throw r.error;
     if(!r.data||!r.data.length){tt('Not allowed. Is this account an admin?');return}
